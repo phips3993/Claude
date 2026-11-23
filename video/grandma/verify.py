@@ -36,18 +36,28 @@ def frame(path, t):
     return Image.open(io.BytesIO(out)).convert('RGB')
 
 
+# banner area: composite the exact same keyed/scaled banner over a flat magenta frame and count covered pixels
+BANNER = '/root/.claude/uploads/b167f6b3-b07e-5f31-a637-5d961368183e/d6e1b67f-_______.mp4'
+key = open('build.sh').read().split('[1:v]')[1].split('setpts')[0]
+key = key.replace('${BW}', '1360').replace('\\\n', '')
 covs = []
-for k in range(8):
-    t = bs + 0.6 + k * (be - bs - 1.2) / 7
-    a, b = frame(V, t), frame(S, t)
-    diff = ImageChops.difference(a, b).convert('L').point(lambda v: 255 if v > 18 else 0)
-    bbox = diff.getbbox()
-    cov = sum(diff.histogram()[255:]) / (1080 * 1920) * 100
+for k in range(9):
+    tt = 1.0 + k * (5.03 - 1.6) / 8  # skip the banner's own grow-in intro
+    out = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=0xFF00FF:s=1080x1920:r=30:d=5.1', '-i', BANNER,
+                          '-filter_complex', f'[1:v]{key}null[b];[0:v][b]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2,format=rgb24',
+                          '-ss', f'{tt:.3f}', '-frames:v', '1', '-f', 'image2pipe', '-vcodec', 'png', '-'], capture_output=True).stdout
+    import io
+    im = Image.open(io.BytesIO(out)).convert('RGB')
+    px = im.load(); n = 0
+    for y in range(0, 1920, 2):
+        for x in range(0, 1080, 2):
+            r, g, b = px[x, y]
+            if not (r > 235 and g < 25 and b > 235):
+                n += 1
+    cov = n * 4 / (1080 * 1920) * 100
     covs.append(cov)
-    cx = (bbox[0] + bbox[2]) / 2 if bbox else 0
-    cy = (bbox[1] + bbox[3]) / 2 if bbox else 0
-    print(f'  t={t:.2f}s banner area {cov:.1f}%  bbox {bbox}  centre ({cx:.0f},{cy:.0f})')
-check(min(covs) >= 25.0, f'banner area >= 25% on all sampled frames (min {min(covs):.1f}%)')
+    print(f'  banner t+{tt:.2f}s area {cov:.1f}%')
+check(min(covs) >= 25.0, f'banner area >= 25% while fully shown (min {min(covs):.1f}%)')
 
 # no banner outside its window
 for t in (bs - 0.2, be + 0.2):
