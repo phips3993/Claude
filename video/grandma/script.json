@@ -1,0 +1,183 @@
+{
+ "voices": {
+  "grandma": "ZgfahluxUmUzBjjL81NN",
+  "grandson": "RvcToHi9ENVDatbeYNJe",
+  "petrovich": "0vJ96DzHePfGJitmI6UX"
+ },
+ "lines": [
+  {
+   "id": "l01",
+   "who": "grandma",
+   "part": "A",
+   "emotion": "sly",
+   "tags": "[mischievously]",
+   "text": "Я — техподдержка всего района. Беру пирожками.",
+   "highlight": [
+    "техподдержка",
+    "пирожками"
+   ]
+  },
+  {
+   "id": "l02",
+   "who": "grandson",
+   "part": "A",
+   "tags": "[curious]",
+   "text": "Бабушка, ты вообще знаешь, что такое VPN?",
+   "highlight": [
+    "VPN"
+   ]
+  },
+  {
+   "id": "l03",
+   "who": "grandma",
+   "part": "A",
+   "emotion": "proud",
+   "tags": "[confidently]",
+   "text": "Конечно. Это когда интернет надевает шапку, чтоб его не узнали.",
+   "highlight": [
+    "шапку"
+   ]
+  },
+  {
+   "id": "l04",
+   "who": "grandson",
+   "part": "A",
+   "tags": "[pause] [amused]",
+   "text": "В целом, да. А у тебя он есть?",
+   "highlight": [
+    "есть"
+   ]
+  },
+  {
+   "id": "l05",
+   "who": "grandma",
+   "part": "A",
+   "emotion": "sly",
+   "tags": "[casually]",
+   "text": "У меня их было пять.",
+   "highlight": [
+    "пять"
+   ]
+  },
+  {
+   "id": "l06",
+   "who": "grandson",
+   "part": "A",
+   "tags": "[shocked]",
+   "text": "Пять?!",
+   "highlight": [
+    "Пять?!"
+   ]
+  },
+  {
+   "id": "l07",
+   "who": "grandma",
+   "part": "A",
+   "emotion": "happy",
+   "tags": "[cheerfully]",
+   "text": "Бесплатных. Один рекламу крутил, второй телефон грел. Зимой удобно было.",
+   "highlight": [
+    "рекламу",
+    "грел"
+   ]
+  },
+  {
+   "id": "l08",
+   "who": "grandson",
+   "part": "A",
+   "tags": "",
+   "text": "А потом?",
+   "highlight": []
+  },
+  {
+   "id": "l09",
+   "who": "grandma",
+   "part": "A",
+   "emotion": "serious",
+   "tags": "[seriously] [slowly]",
+   "text": "А потом у Зины с такого бесплатного деньги с карты ушли. И тогда я поняла одну вещь...",
+   "highlight": [
+    "деньги",
+    "одну вещь"
+   ]
+  },
+  {
+   "id": "l10",
+   "who": "grandma",
+   "part": "B",
+   "emotion": "proud",
+   "tags": "[wisely]",
+   "text": "Бесплатный сыр — сам знаешь где. Поставила себе нормальный. Одна кнопка — и всё работает.",
+   "highlight": [
+    "сыр",
+    "одна кнопка"
+   ]
+  },
+  {
+   "id": "l11",
+   "who": "grandson",
+   "part": "B",
+   "tags": "[impressed]",
+   "text": "И что, сама разобралась?",
+   "highlight": [
+    "сама"
+   ]
+  },
+  {
+   "id": "l12",
+   "who": "grandma",
+   "part": "B",
+   "emotion": "proud",
+   "tags": "[proudly]",
+   "text": "Сама. А потом Валентине из третьего подъезда, Петровичу и всему хору ветеранов.",
+   "highlight": [
+    "Петровичу",
+    "хору ветеранов"
+   ]
+  },
+  {
+   "id": "l12b",
+   "who": "grandson",
+   "part": "B",
+   "tags": "[curious]",
+   "text": "И сколько ты берёшь?",
+   "highlight": [
+    "сколько"
+   ]
+  },
+  {
+   "id": "l12c",
+   "who": "grandma",
+   "part": "B",
+   "emotion": "sly",
+   "tags": "[mischievously]",
+   "text": "Пирожками, я же говорила. С капустой — за установку. С мясом — за срочность.",
+   "highlight": [
+    "капустой",
+    "мясом"
+   ]
+  },
+  {
+   "id": "l14",
+   "who": "grandma",
+   "part": "B",
+   "emotion": "sly",
+   "tags": "[matter-of-factly]",
+   "text": "Я консультант. Всё, иди. У меня в пять Петрович на установку.",
+   "highlight": [
+    "консультант",
+    "Петрович"
+   ]
+  },
+  {
+   "id": "l15",
+   "who": "petrovich",
+   "part": "B",
+   "tags": "[loudly] [cheerfully]",
+   "text": "Нина Петровна! Я с пирожками! С мясом!",
+   "highlight": [
+    "С мясом!"
+   ]
+  }
+ ]
+}
