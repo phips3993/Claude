@@ -15,8 +15,10 @@ export type GrandmaProps = {
 	breathe?: number;
 	/** raises phone, screen to viewer */
 	phoneUp?: boolean;
-	/** 0..1 glow of the phone screen (only visible when phoneUp) */
+	/** 0..1 glow of the phone screen */
 	screenGlow?: number;
+	/** 0..1 wink with the viewer's-right eye; rest of the face keeps the emotion */
+	wink?: number;
 	style?: React.CSSProperties;
 };
 
@@ -169,32 +171,31 @@ const Brow: React.FC<{cx: number; cy: number; dy: number; ang: number; side: 'L'
 	);
 };
 
+/** One and the same dark smartphone in both poses (screen with green power button). */
+const PhoneBody: React.FC<{glow: number; id: (s: string) => string}> = ({glow, id}) => (
+	<g>
+		<rect x={-78} y={-140} width={156} height={290} rx={26} fill="#2B2F3A" />
+		<rect x={-68} y={-128} width={136} height={266} rx={18} fill={`url(#${id('screen')})`} />
+		<circle cx={0} cy={0} r={62} fill={P.green} opacity={0.15 + 0.25 * glow} />
+		<circle cx={0} cy={0} r={44} fill="none" stroke={P.green} strokeWidth={10} opacity={0.55 + 0.35 * glow} />
+		<path d="M0 -50 L0 -8" stroke={P.green} strokeWidth={11} strokeLinecap="round" opacity={0.55 + 0.35 * glow} />
+		<rect x={-30} y={70} width={60} height={10} rx={5} fill="#fff" opacity={0.35} />
+		<rect x={-22} y={-118} width={44} height={8} rx={4} fill="#0E1016" />
+		<path d="M-68 -128 L10 -128 L-68 40Z" fill="#fff" opacity={0.06} />
+	</g>
+);
+
 const Phone: React.FC<{up: boolean; glow: number; id: (s: string) => string}> = ({up, glow, id}) => {
 	if (up) {
 		return (
 			<g transform="translate(700 470) rotate(8)">
-				<rect x={-78} y={-140} width={156} height={290} rx={26} fill="#2B2F3A" />
-				<rect x={-68} y={-128} width={136} height={266} rx={18} fill={`url(#${id('screen')})`} />
-				<circle cx={0} cy={0} r={62} fill={P.green} opacity={0.15 + 0.25 * glow} />
-				<circle cx={0} cy={0} r={44} fill="none" stroke={P.green} strokeWidth={10} opacity={0.9} />
-				<path d="M0 -50 L0 -8" stroke={P.green} strokeWidth={11} strokeLinecap="round" />
-				<rect x={-30} y={70} width={60} height={10} rx={5} fill="#fff" opacity={0.35} />
-				<rect x={-22} y={-118} width={44} height={8} rx={4} fill="#0E1016" />
-				<path d="M-68 -128 L10 -128 L-68 40Z" fill="#fff" opacity={0.06} />
+				<PhoneBody glow={glow} id={id} />
 			</g>
 		);
 	}
 	return (
-		<g transform="translate(560 905) rotate(-14)">
-			<rect x={-62} y={-110} width={124} height={220} rx={22} fill={P.red} />
-			<rect x={-62} y={-110} width={124} height={220} rx={22} fill="none" stroke="#B3362B" strokeWidth={6} />
-			<circle cx={-28} cy={-74} r={14} fill="#2B2F3A" />
-			<circle cx={-28} cy={-74} r={6} fill="#56607A" />
-			{/* little flower sticker */}
-			<circle cx={18} cy={30} r={14} fill={P.mustard} />
-			{[0, 72, 144, 216, 288].map((a) => (
-				<circle key={a} cx={18} cy={12} r={7} fill="#FBF1DF" transform={`rotate(${a} 18 30)`} />
-			))}
+		<g transform="translate(560 900) rotate(-14) scale(0.78)">
+			<PhoneBody glow={glow * 0.6} id={id} />
 		</g>
 	);
 };
@@ -207,6 +208,7 @@ export const Grandma: React.FC<GrandmaProps> = ({
 	breathe = 0,
 	phoneUp = false,
 	screenGlow = 0.5,
+	wink = 0,
 	style,
 }) => {
 	const id = useSvgId('grandma');
@@ -215,7 +217,8 @@ export const Grandma: React.FC<GrandmaProps> = ({
 	const chestY = -b * 8;
 	const tilt = headTilt + f.tilt;
 	const lidL = Math.max(f.lidL, blink);
-	const lidR = Math.max(f.lidR, blink);
+	const w = clamp(wink);
+	const lidR = Math.max(f.lidR, blink, w);
 	return (
 		<svg
 			viewBox={`0 0 ${GRANDMA_W} ${GRANDMA_H}`}
@@ -314,7 +317,7 @@ export const Grandma: React.FC<GrandmaProps> = ({
 					<g>
 						<path d="M655 760 C720 860 700 960 600 980" stroke={P.mustard} strokeWidth={112} strokeLinecap="round" fill="none" />
 						<path d="M655 760 C720 860 700 960 600 980" stroke={P.mustardDark} strokeOpacity={0.25} strokeWidth={112} strokeLinecap="round" fill="none" />
-						<Phone up={false} glow={0} id={id} />
+						<Phone up={false} glow={screenGlow} id={id} />
 						<ellipse cx={600} cy={990} rx={56} ry={44} fill={P.skin} />
 						<ellipse cx={515} cy={925} rx={18} ry={26} fill={P.skin} transform="rotate(-20 515 925)" />
 					</g>
@@ -345,7 +348,7 @@ export const Grandma: React.FC<GrandmaProps> = ({
 
 				{/* blush */}
 				<ellipse cx={365} cy={478} rx={50} ry={30} fill={`url(#${id('blush')})`} opacity={f.blush} />
-				<ellipse cx={535} cy={478} rx={50} ry={30} fill={`url(#${id('blush')})`} opacity={f.blush} />
+				<ellipse cx={535} cy={478 - w * 8} rx={50} ry={30} fill={`url(#${id('blush')})`} opacity={Math.max(f.blush, w)} />
 
 				{/* crow's feet */}
 				<path d="M322 392 l-16 -6 M322 404 l-16 4" stroke={P.skinDeep} strokeWidth={3.5} strokeLinecap="round" opacity={0.6} />
@@ -357,7 +360,7 @@ export const Grandma: React.FC<GrandmaProps> = ({
 
 				{/* brows */}
 				<Brow cx={EYE_L.x} cy={330} dy={f.browL} ang={f.browAngL} side="L" />
-				<Brow cx={EYE_R.x} cy={330} dy={f.browR} ang={f.browAngR} side="R" />
+				<Brow cx={EYE_R.x} cy={330} dy={f.browR + w * 12} ang={f.browAngR + w * 8} side="R" />
 
 				{/* glasses */}
 				<g>

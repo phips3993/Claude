@@ -28,7 +28,7 @@ def place(idx, t, vol=1.0, trim=None, extra=''):
 # voices
 voice_labels = []
 for l in tl['lines']:
-    i = add_input(f"public/vo/{l['id']}.mp3")
+    i = add_input(f"public/vo_fast/{l['id']}.mp3")
     place(i, l['start'], 1.0, (l['clipStart'], l['clipEnd']),
           extra='afade=t=out:st=%.3f:d=0.06,' % max(0, l['dur'] - 0.06))
     voice_labels.append(labels[-1])

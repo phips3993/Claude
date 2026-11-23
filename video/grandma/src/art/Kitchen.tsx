@@ -82,18 +82,18 @@ export const Kitchen: React.FC<KitchenProps> = ({parallax = 0, style}) => {
 		>
 			<defs>
 				<linearGradient id={id('wall')} x1="0" y1="0" x2="0" y2="1">
-					<stop offset="0" stopColor="#E9A27C" />
-					<stop offset="0.55" stopColor="#F2BC93" />
-					<stop offset="1" stopColor="#E7A47E" />
+					<stop offset="0" stopColor="#E0875F" />
+					<stop offset="0.55" stopColor="#EFAA7E" />
+					<stop offset="1" stopColor="#DE8B63" />
 				</linearGradient>
 				<radialGradient id={id('lamp')} cx="0.62" cy="0.22" r="0.75">
-					<stop offset="0" stopColor="#FFE7A8" stopOpacity="0.85" />
-					<stop offset="0.35" stopColor="#FFC98A" stopOpacity="0.35" />
+					<stop offset="0" stopColor="#FFE7A8" stopOpacity="0.38" />
+					<stop offset="0.3" stopColor="#FFC98A" stopOpacity="0.12" />
 					<stop offset="1" stopColor="#8E3F2A" stopOpacity="0" />
 				</radialGradient>
 				<radialGradient id={id('vignette')} cx="0.5" cy="0.45" r="0.8">
-					<stop offset="0.55" stopColor="#000" stopOpacity="0" />
-					<stop offset="1" stopColor="#2A1210" stopOpacity="0.55" />
+					<stop offset="0.5" stopColor="#000" stopOpacity="0" />
+					<stop offset="1" stopColor="#2A1210" stopOpacity="0.72" />
 				</radialGradient>
 				<linearGradient id={id('sky')} x1="0" y1="0" x2="0" y2="1">
 					<stop offset="0" stopColor="#0E2533" />
@@ -217,7 +217,7 @@ export const Kitchen: React.FC<KitchenProps> = ({parallax = 0, style}) => {
 					<rect key={i} x={556 + i * 20} y={248} width={8} height={16} rx={4} fill={P.mustard} />
 				))}
 				<ellipse cx={670} cy={262} rx={60} ry={14} fill="#FFF2C4" opacity={0.95} />
-				<ellipse cx={670} cy={262} rx={190} ry={60} fill="#FFE7A8" opacity={0.18} />
+				<ellipse cx={670} cy={262} rx={190} ry={60} fill="#FFE7A8" opacity={0.1} />
 			</g>
 
 			<rect x={-B} y={-B} width={W + 2 * B} height={H + 2 * B} fill={`url(#${id('vignette')})`} />

@@ -10,7 +10,8 @@ import json, re, subprocess, array
 
 FPS = 30
 BANNER_FRAMES = 151  # 5.0333 s banner at 30 fps
-GAP = 0.22           # default pause between lines, seconds
+GAP = 0.13           # default pause between lines, seconds
+SPEED = 1.1          # voice tempo (atempo) -> files in public/vo_fast
 LEAD = 0.04
 TAIL = 0.18
 
@@ -37,7 +38,9 @@ def loudness(path, start, end):
 
 for l in s['lines']:
     al = json.load(open(f"public/vo/{l['id']}.json"))
-    chars, st, en = al['characters'], al['character_start_times_seconds'], al['character_end_times_seconds']
+    chars = al['characters']
+    st = [x / SPEED for x in al['character_start_times_seconds']]
+    en = [x / SPEED for x in al['character_end_times_seconds']]
     full = ''.join(chars)
     m = re.match(r'^(\s*\[[^\]]*\]\s*)*', full)
     off = m.end() if m else 0
@@ -51,7 +54,7 @@ for l in s['lines']:
         words.append({'w': w, 's': st[a], 'e': en[b]})
     t0 = max(0, words[0]['s'] - LEAD)
     # cut trailing silence that the alignment smears into the last word
-    sd = subprocess.run(['ffmpeg', '-i', f"public/vo/{l['id']}.mp3", '-af', 'silencedetect=n=-38dB:d=0.15',
+    sd = subprocess.run(['ffmpeg', '-i', f"public/vo_fast/{l['id']}.mp3", '-af', 'silencedetect=n=-38dB:d=0.15',
                          '-f', 'null', '-'], capture_output=True, text=True).stderr
     starts = [float(x) for x in re.findall(r'silence_start: ([\d.]+)', sd)]
     ends = [float(x) for x in re.findall(r'silence_end: ([\d.]+)', sd)]
@@ -66,10 +69,10 @@ for l in s['lines']:
         w['s'] = round(w['s'] - t0, 3); w['e'] = round(w['e'] - t0, 3)
     lines_out.append({**l, 'clipStart': round(t0, 3), 'clipEnd': round(t1, 3),
                       'dur': round(t1 - t0, 3), 'words': words,
-                      'amp': loudness(f"public/vo/{l['id']}.mp3", t0, t1)})
+                      'amp': loudness(f"public/vo_fast/{l['id']}.mp3", t0, t1)})
 
 # extra pauses (seconds) BEFORE a given line, for comedic timing / sfx
-pre = {'l04': 0.45, 'l06': 0.1, 'l08': 0.15, 'l09': 0.25, 'l10': 0.5, 'l12b': 0.3, 'l15': 1.1}
+pre = {'l04': 0.3, 'l06': 0.05, 'l08': 0.1, 'l09': 0.15, 'l10': 0.3, 'l12b': 0.2, 'l15': 0.85}
 
 def place(part, t):
     for l in lines_out:
@@ -81,8 +84,8 @@ def place(part, t):
     return t
 
 def halves():
-    a = place('A', 0.0) - GAP + 0.6      # hold on the cliffhanger freeze
-    b = place('B', 0.0) - GAP + 1.2      # hold on the final gag
+    a = place('A', 0.0) - GAP + 0.5      # hold on the cliffhanger freeze
+    b = place('B', 0.0) - GAP + 0.7      # hold on the final gag (wink)
     return a, b
 
 a_end, b_len = halves()

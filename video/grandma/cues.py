@@ -25,6 +25,7 @@ cues = {
     'ads': word_t('l07', 'рекламу'),
     'hot': word_t('l07', 'грел'),
     'appsOut': L['l08']['start'],
+    'zina': word_t('l09', 'Зины'),
     'money': word_t('l09', 'деньги'),
     'thing': word_t('l09', 'вещь'),
     'freeze': round(L['l09']['start'] + L['l09']['dur'], 3),

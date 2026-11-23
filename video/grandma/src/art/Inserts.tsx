@@ -327,20 +327,18 @@ export const Neighbors: React.FC<InsertProps> = (props) => {
 						</g>
 					);
 				})}
-				{/* choir song notes */}
-				{[0, 1, 2].map((i) => (
-					<text
-						key={i}
-						x={250 + i * 160}
-						y={200 - ((t * 50 + i * 30) % 70)}
-						fontSize={56}
-						fill={P.terracotta}
-						opacity={0.75}
-						fontFamily="DejaVu Sans, Arial"
-					>
-						♪
-					</text>
-				))}
+				{/* choir song notes (vector, kept inside the circle) */}
+				{[0, 1, 2].map((i) => {
+					const y = 250 - ((t * 50 + i * 30) % 70);
+					const x = 270 + i * 130;
+					return (
+						<g key={i} transform={`translate(${x} ${y}) rotate(-12)`} opacity={0.8}>
+							<ellipse cx={0} cy={0} rx={17} ry={12} fill={P.terracotta} transform="rotate(-20)" />
+							<rect x={12} y={-62} width={7} height={62} rx={3} fill={P.terracotta} />
+							<path d="M19 -62 C38 -52 44 -40 34 -24 C38 -38 30 -44 19 -46Z" fill={P.terracotta} />
+						</g>
+					);
+				})}
 			</g>
 		</Frame>
 	);
@@ -380,9 +378,10 @@ export const OneButton: React.FC<InsertProps & {on?: number}> = (props) => {
 };
 
 /** Front door with ringing doorbell waves. */
-export const Doorbell: React.FC<InsertProps> = (props) => {
+export const Doorbell: React.FC<InsertProps & {open?: number}> = (props) => {
 	const id = useSvgId('door');
 	const t = props.t ?? 0;
+	const o = clamp(props.open ?? 0);
 	const ring = (t * 1.6) % 1;
 	return (
 		<Frame {...props}>
@@ -392,19 +391,79 @@ export const Doorbell: React.FC<InsertProps> = (props) => {
 					<stop offset="0" stopColor="#8E4A2A" />
 					<stop offset="1" stopColor="#6E3620" />
 				</linearGradient>
+				<linearGradient id={id('hall')} x1="0" y1="0" x2="0" y2="1">
+					<stop offset="0" stopColor="#3A2A22" />
+					<stop offset="0.6" stopColor="#6B4A2E" />
+					<stop offset="1" stopColor="#C89A5C" />
+				</linearGradient>
+				<pattern id={id('plaid')} width="44" height="44" patternUnits="userSpaceOnUse">
+					<rect width="44" height="44" fill="#3E5B8A" />
+					<rect x="0" y="16" width="44" height="12" fill="#C8463A" opacity="0.85" />
+					<rect x="16" y="0" width="12" height="44" fill="#C8463A" opacity="0.6" />
+					<rect x="0" y="21" width="44" height="2" fill="#F2E6D6" opacity="0.7" />
+					<rect x="21" y="0" width="2" height="44" fill="#F2E6D6" opacity="0.5" />
+				</pattern>
+				<clipPath id={id('opening')}>
+					<rect x={228} y={156} width={264} height={484} rx={8} />
+				</clipPath>
 			</defs>
 			<rect x={210} y={140} width={300} height={500} rx={14} fill="#E9D8BC" />
-			<rect x={228} y={156} width={264} height={484} rx={8} fill={`url(#${id('door')})`} />
-			{/* quilted door padding */}
-			{[...Array(4)].map((_, r) =>
-				[...Array(3)].map((__, c) => <circle key={`${r}-${c}`} cx={280 + c * 80} cy={230 + r * 110} r={7} fill={P.mustard} />),
+			{/* doorway behind the leaf: warm stairwell light */}
+			<rect x={228} y={156} width={264} height={484} rx={8} fill={`url(#${id('hall')})`} />
+			{/* Petrovich's arm with a tray of pirozhki */}
+			{o > 0.01 && (
+				<g clipPath={`url(#${id('opening')})`}>
+					<g transform={`translate(0 ${(1 - easeOutCubic(clamp(o * 1.4 - 0.3))) * 260})`}>
+						<path d="M300 660 C300 560 320 500 340 470 L410 470 C420 510 430 570 430 660Z" fill={`url(#${id('plaid')})`} />
+						<path d="M300 660 C300 560 320 500 340 470 L410 470 C420 510 430 570 430 660Z" fill="#000" opacity={0.12} />
+						<rect x={330} y={452} width={90} height={30} rx={10} fill="#3E5B8A" />
+						<ellipse cx={372} cy={448} rx={40} ry={26} fill={P.skin} />
+						{/* tray */}
+						<ellipse cx={360} cy={420} rx={140} ry={40} fill="#C9CED6" />
+						<ellipse cx={360} cy={414} rx={128} ry={32} fill="#E6E9EE" />
+						{[
+							[300, 398, -10],
+							[365, 392, 6],
+							[425, 400, -4],
+							[332, 370, 12],
+							[396, 368, -14],
+						].map(([x, y, r], i) => (
+							<g key={i} transform={`translate(${x} ${y}) rotate(${r})`}>
+								<ellipse cx={0} cy={0} rx={38} ry={21} fill="#D58A36" />
+								<ellipse cx={0} cy={-4} rx={34} ry={15} fill="#ECAA55" />
+								<path d="M-22 -6 C-8 -12 8 -12 22 -6" stroke="#FCE3A8" strokeWidth={4} strokeLinecap="round" fill="none" />
+							</g>
+						))}
+						{/* steam */}
+						{[0, 1].map((i) => (
+							<path
+								key={i}
+								d={`M${340 + i * 50} 340 c-12 -16 12 -26 0 -42`}
+								stroke="#fff"
+								strokeWidth={9}
+								strokeLinecap="round"
+								fill="none"
+								opacity={0.7}
+								transform={`translate(0 ${-((t * 26 + i * 8) % 14)})`}
+							/>
+						))}
+					</g>
+				</g>
 			)}
-			<path d="M280 230 L440 560 M440 230 L280 560" stroke="#5A2A18" strokeWidth={3} opacity={0.4} />
-			<circle cx={460} cy={410} r={14} fill={P.mustard} />
-			<rect x={330} y={190} width={60} height={30} rx={6} fill={P.mustard} />
-			<text x={360} y={214} textAnchor="middle" fontFamily="Inter, Arial" fontWeight={900} fontSize={22} fill="#5A2A18">
-				47
-			</text>
+			{/* door leaf, hinge on the right edge (x=492) */}
+			<g transform={`translate(492 0) scale(${1 - 0.8 * easeOutCubic(o)} 1) translate(-492 0)`}>
+				<rect x={228} y={156} width={264} height={484} rx={8} fill={`url(#${id('door')})`} />
+				{[...Array(4)].map((_, r) =>
+					[...Array(3)].map((__, c) => <circle key={`${r}-${c}`} cx={280 + c * 80} cy={230 + r * 110} r={7} fill={P.mustard} />),
+				)}
+				<path d="M280 230 L440 560 M440 230 L280 560" stroke="#5A2A18" strokeWidth={3} opacity={0.4} />
+				<circle cx={260} cy={410} r={14} fill={P.mustard} />
+				<rect x={330} y={190} width={60} height={30} rx={6} fill={P.mustard} />
+				<text x={360} y={214} textAnchor="middle" fontFamily="Inter, Arial" fontWeight={900} fontSize={22} fill="#5A2A18">
+					47
+				</text>
+				<rect x={228} y={156} width={264} height={484} rx={8} fill="#000" opacity={0.35 * o} />
+			</g>
 			{/* bell */}
 			<g transform="translate(570 330)">
 				<rect x={-34} y={-46} width={68} height={92} rx={14} fill="#FFFFFF" stroke="#D9C2A0" strokeWidth={5} />
