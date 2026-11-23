@@ -489,3 +489,242 @@ export const Doorbell: React.FC<InsertProps & {open?: number}> = (props) => {
 		</Frame>
 	);
 };
+
+/** Bank card (no brand) with banknotes flying away up-right, red alarm glow. */
+export const MoneyCard: React.FC<InsertProps> = (props) => {
+	const id = useSvgId('money');
+	const t = props.t ?? 0;
+	const alarm = 0.5 + 0.5 * Math.sin(t * 7);
+	const bills = 7;
+	return (
+		<Frame {...props}>
+			<defs>
+				<radialGradient id={id('alarm')} cx="0.5" cy="0.5" r="0.5">
+					<stop offset="0" stopColor="#FF3B30" stopOpacity="0.75" />
+					<stop offset="0.6" stopColor="#FF3B30" stopOpacity="0.25" />
+					<stop offset="1" stopColor="#FF3B30" stopOpacity="0" />
+				</radialGradient>
+				<linearGradient id={id('card')} x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0" stopColor="#2D6670" />
+					<stop offset="1" stopColor="#12323A" />
+				</linearGradient>
+				<linearGradient id={id('chip')} x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0" stopColor="#F6D58A" />
+					<stop offset="1" stopColor="#C99A3E" />
+				</linearGradient>
+				<filter id={id('sh')} x="-30%" y="-30%" width="160%" height="160%">
+					<feDropShadow dx="0" dy="18" stdDeviation="20" floodColor="#3A0808" floodOpacity="0.45" />
+				</filter>
+			</defs>
+			<Card id={id} />
+			<circle cx={400} cy={440} r={330} fill={`url(#${id('alarm')})`} opacity={0.45 + 0.5 * alarm} />
+			{/* card */}
+			<g transform="translate(360 470) rotate(-10)" filter={`url(#${id('sh')})`}>
+				<rect x={-200} y={-126} width={400} height={252} rx={28} fill={`url(#${id('card')})`} />
+				<path d="M-200 -40 C-60 -120 80 40 200 -60 L200 -126 L-200 -126Z" fill="#fff" opacity={0.07} />
+				<rect x={-160} y={-64} width={70} height={54} rx={10} fill={`url(#${id('chip')})`} />
+				<path d="M-160 -37 h70 M-125 -64 v54" stroke="#A97E2E" strokeWidth={3} />
+				{[0, 1, 2].map((i) => (
+					<path key={i} d={`M${-60 + i * 14} -60 a${18 + i * 12} ${18 + i * 12} 0 0 1 0 44`} stroke="#fff" strokeOpacity={0.6} strokeWidth={5} fill="none" strokeLinecap="round" />
+				))}
+				{[0, 1, 2, 3].map((g) => (
+					<g key={g}>
+						{[0, 1, 2, 3].map((d) => (
+							<circle key={d} cx={-160 + g * 84 + d * 16} cy={46} r={5.5} fill="#fff" opacity={g === 3 ? 0 : 0.85} />
+						))}
+					</g>
+				))}
+				<text x={92} y={56} fontFamily="Inter, Arial" fontWeight={800} fontSize={34} fill="#fff" opacity={0.9}>
+					4821
+				</text>
+				<circle cx={140} cy={-80} r={22} fill={P.red} opacity={0.9} />
+				<circle cx={166} cy={-80} r={22} fill={P.mustard} opacity={0.9} />
+			</g>
+			{/* warning badge */}
+			<g transform={`translate(560 280) scale(${1 + 0.08 * alarm})`}>
+				<circle cx={0} cy={0} r={44} fill={P.red} />
+				<rect x={-6} y={-26} width={12} height={32} rx={6} fill="#fff" />
+				<circle cx={0} cy={20} r={7} fill="#fff" />
+			</g>
+			{/* banknotes flying up-right */}
+			{[...Array(bills)].map((_, i) => {
+				const k = (t * 0.7 + i / bills) % 1;
+				const x = 380 + k * 360 + Math.sin(k * 9 + i) * 24;
+				const y = 420 - k * 420;
+				const r = -20 + k * 160 * (i % 2 ? 1 : -0.6);
+				const sc = 0.7 + 0.4 * (1 - k);
+				return (
+					<g key={i} transform={`translate(${x} ${y}) rotate(${r}) scale(${sc} ${sc * (0.6 + 0.4 * Math.abs(Math.cos(k * 10 + i)))})`} opacity={k < 0.08 ? k / 0.08 : 1 - k}>
+						<rect x={-66} y={-34} width={132} height={68} rx={8} fill="#7FD3A0" />
+						<rect x={-56} y={-24} width={112} height={48} rx={5} fill="none" stroke="#3E9C6A" strokeWidth={4} />
+						<circle cx={0} cy={0} r={16} fill="#3E9C6A" />
+						<text x={0} y={8} textAnchor="middle" fontFamily="Inter, Arial" fontWeight={900} fontSize={22} fill="#E9FFF2">
+							₽
+						</text>
+					</g>
+				);
+			})}
+		</Frame>
+	);
+};
+
+/** Neighbour Zina: frightened elderly woman in curlers and a polka-dot housecoat. */
+export const Zina: React.FC<InsertProps> = (props) => {
+	const id = useSvgId('zina');
+	const t = props.t ?? 0;
+	const shake = Math.sin(t * 30) * 2.5;
+	const skin = '#EDB894';
+	return (
+		<Frame {...props}>
+			<defs>
+				<radialGradient id={id('bg')} cx="0.5" cy="0.4" r="0.7">
+					<stop offset="0" stopColor="#D8ECEA" />
+					<stop offset="1" stopColor="#8FBFC0" />
+				</radialGradient>
+				<pattern id={id('dots')} width="40" height="40" patternUnits="userSpaceOnUse">
+					<rect width="40" height="40" fill="#7C5CC4" />
+					<circle cx="10" cy="10" r="6" fill="#F4E9FF" />
+					<circle cx="30" cy="30" r="6" fill="#F4E9FF" />
+				</pattern>
+				<filter id={id('sh')} x="-30%" y="-30%" width="160%" height="160%">
+					<feDropShadow dx="0" dy="18" stdDeviation="22" floodColor="#3A1608" floodOpacity="0.35" />
+				</filter>
+				<clipPath id={id('clip')}>
+					<circle cx={400} cy={400} r={330} />
+				</clipPath>
+			</defs>
+			<circle cx={400} cy={400} r={330} fill={`url(#${id('bg')})`} filter={`url(#${id('sh')})`} />
+			<g clipPath={`url(#${id('clip')})`}>
+				<g transform={`translate(${shake} 0)`}>
+					{/* housecoat */}
+					<path d="M170 820 C170 640 250 590 400 590 C550 590 630 640 630 820Z" fill={`url(#${id('dots')})`} />
+					<path d="M360 590 L400 680 L440 590Z" fill={skin} />
+					<path d="M330 600 L400 700 L470 600" stroke="#5A3FA0" strokeWidth={14} fill="none" strokeLinejoin="round" />
+					<rect x={370} y={520} width={60} height={80} fill="#D9A07E" />
+					{/* hair (auburn) */}
+					<ellipse cx={400} cy={360} rx={175} ry={170} fill="#A4472A" />
+					{/* face */}
+					<ellipse cx={400} cy={410} rx={135} ry={150} fill={skin} />
+					{/* curlers */}
+					{[
+						[300, 250, -30],
+						[365, 222, -10],
+						[435, 222, 10],
+						[500, 250, 30],
+						[250, 315, -55],
+						[550, 315, 55],
+					].map(([x, y, r], i) => (
+						<g key={i} transform={`translate(${x} ${y}) rotate(${r})`}>
+							<rect x={-30} y={-22} width={60} height={44} rx={16} fill={i % 2 ? '#F4A6C4' : '#8ED1E8'} />
+							<rect x={-30} y={-22} width={60} height={12} rx={6} fill="#fff" opacity={0.35} />
+							{[-16, 0, 16].map((dx) => (
+								<circle key={dx} cx={dx} cy={4} r={3} fill="#fff" opacity={0.7} />
+							))}
+						</g>
+					))}
+					{/* scared brows */}
+					<path d="M310 318 Q340 290 372 306" stroke="#7A3320" strokeWidth={11} strokeLinecap="round" fill="none" />
+					<path d="M428 306 Q460 290 490 318" stroke="#7A3320" strokeWidth={11} strokeLinecap="round" fill="none" />
+					{/* wide eyes with tiny pupils */}
+					{[345, 455].map((x) => (
+						<g key={x}>
+							<ellipse cx={x} cy={372} rx={30} ry={36} fill="#fff" />
+							<circle cx={x} cy={374} r={8} fill="#24171A" />
+							<circle cx={x + 3} cy={370} r={2.5} fill="#fff" />
+						</g>
+					))}
+					{/* nose + wavy scared mouth */}
+					<path d="M400 400 C392 430 390 444 404 448" stroke="#C98A68" strokeWidth={6} strokeLinecap="round" fill="none" />
+					<ellipse cx={400} cy={492} rx={34} ry={36} fill="#6E2431" />
+					<path d="M368 482 q8 -8 16 0 q8 8 16 0 q8 -8 16 0 q8 8 16 0" stroke="#FFFBF2" strokeWidth={6} fill="none" strokeLinecap="round" />
+					<ellipse cx={330} cy={450} rx={26} ry={14} fill={P.blush} opacity={0.5} />
+					<ellipse cx={470} cy={450} rx={26} ry={14} fill={P.blush} opacity={0.5} />
+					{/* hands on cheeks */}
+					<ellipse cx={262} cy={470} rx={44} ry={64} fill={skin} transform="rotate(-14 262 470)" />
+					<ellipse cx={538} cy={470} rx={44} ry={64} fill={skin} transform="rotate(14 538 470)" />
+					{/* sweat drop */}
+					<path d="M560 330 C548 352 548 366 560 370 C572 366 572 352 560 330Z" fill="#8ED1E8" />
+				</g>
+				{/* shock lines */}
+				{[0, 1, 2].map((i) => (
+					<path
+						key={i}
+						d={`M${180 - i * 10} ${200 + i * 40} l-40 -20`}
+						stroke={P.ink}
+						strokeWidth={8}
+						strokeLinecap="round"
+						opacity={0.5 + 0.5 * Math.sin(t * 10 + i)}
+					/>
+				))}
+			</g>
+		</Frame>
+	);
+};
+
+/**
+ * Price sticker "VPN = 1 пирожок", tilted ~−6°. Rectangular, no cream circle.
+ * Rendered box: size × size*0.62. Uses Montserrat 900 (loaded globally in the video).
+ */
+export const PieSticker: React.FC<InsertProps> = ({progress, t = 0, size = 800, style}) => {
+	const id = useSvgId('sticker');
+	const p = clamp(progress);
+	const s = easeOutBack(p);
+	const wobble = Math.sin(t * 3) * 1.2;
+	const H = 496;
+	return (
+		<svg
+			viewBox={`0 0 800 ${H}`}
+			width={size}
+			height={(size * H) / 800}
+			style={{overflow: 'visible', opacity: clamp(p * 3), ...style}}
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<defs>
+				<filter id={id('sh')} x="-20%" y="-20%" width="140%" height="140%">
+					<feDropShadow dx="0" dy="14" stdDeviation="16" floodColor="#3A1608" floodOpacity="0.4" />
+				</filter>
+				<radialGradient id={id('pie')} cx="0.4" cy="0.3" r="0.8">
+					<stop offset="0" stopColor="#F7CB76" />
+					<stop offset="0.7" stopColor="#D58A36" />
+					<stop offset="1" stopColor="#A9601F" />
+				</radialGradient>
+			</defs>
+			<g transform={`translate(400 ${H / 2}) rotate(${-6 + wobble}) scale(${Math.max(0.0001, s)}) translate(-400 ${-H / 2})`}>
+				<rect x={30} y={40} width={740} height={416} rx={40} fill="#FFF9EE" filter={`url(#${id('sh')})`} />
+				<rect x={52} y={62} width={696} height={372} rx={28} fill="none" stroke={P.terracotta} strokeWidth={6} strokeDasharray="18 12" />
+				{/* tape */}
+				<rect x={330} y={16} width={140} height={48} rx={6} fill="#F6E3A6" opacity={0.85} transform="rotate(4 400 40)" />
+				{/* pie */}
+				<g transform="translate(210 250) rotate(-10)">
+					<ellipse cx={0} cy={70} rx={130} ry={22} fill="#5A2216" opacity={0.18} />
+					<path d="M-130 20 C-120 -70 120 -70 130 20 C120 70 -120 70 -130 20Z" fill={`url(#${id('pie')})`} />
+					<path d="M-96 -6 C-40 -40 40 -40 96 -6" stroke="#FCE3A8" strokeWidth={9} strokeLinecap="round" fill="none" />
+					{[-60, -20, 20, 60].map((x) => (
+						<path key={x} d={`M${x} -30 q10 18 0 36`} stroke="#B86A26" strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.7} />
+					))}
+					<ellipse cx={-40} cy={-30} rx={34} ry={10} fill="#fff" opacity={0.3} />
+					{/* steam */}
+					{[0, 1, 2].map((i) => (
+						<path
+							key={i}
+							d={`M${-50 + i * 50} -80 c-14 -18 14 -30 0 -48`}
+							stroke={P.terracotta}
+							strokeOpacity={0.35}
+							strokeWidth={9}
+							strokeLinecap="round"
+							fill="none"
+							transform={`translate(0 ${-((t * 26 + i * 9) % 16)})`}
+						/>
+					))}
+				</g>
+				{/* text */}
+				<text x={552} y={232} textAnchor="middle" fontFamily="Montserrat, Inter, Arial" fontWeight={900} fontSize={96} fill={P.tealDeep}>
+					VPN =
+				</text>
+				<text x={552} y={336} textAnchor="middle" fontFamily="Montserrat, Inter, Arial" fontWeight={900} fontSize={58} fill={P.terracotta}>
+					1 пирожок
+				</text>
+			</g>
+		</svg>
+	);
+};

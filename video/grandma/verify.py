@@ -39,7 +39,7 @@ def frame(path, t):
 # banner area: composite the exact same keyed/scaled banner over a flat magenta frame and count covered pixels
 BANNER = '/root/.claude/uploads/b167f6b3-b07e-5f31-a637-5d961368183e/d6e1b67f-_______.mp4'
 key = open('build.sh').read().split('[1:v]')[1].split('setpts')[0]
-key = key.replace('${BW}', '1360').replace('\\\n', '')
+key = key.replace('${BW}', '1372').replace('\\\n', '')
 covs = []
 for k in range(9):
     tt = 1.0 + k * (5.03 - 1.6) / 8  # skip the banner's own grow-in intro

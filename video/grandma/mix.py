@@ -56,7 +56,7 @@ labels += ['musA', 'musB']
 
 # banner jingle, untouched speed, starts exactly at banner start
 b = add_input(BANNER)
-place(b, bs, 0.9)
+place(b, bs, 0.75)
 
 # voice bus normalised, everything else under it
 filters.append(''.join(f'[{x}]' for x in voice_labels) + f'amix=inputs={len(voice_labels)}:normalize=0,'

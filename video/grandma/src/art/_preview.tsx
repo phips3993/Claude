@@ -2,13 +2,15 @@
 // Render: npx remotion still src/art/_preview.tsx <Id> preview/<file>.png --browser-executable=...
 import React from 'react';
 import {AbsoluteFill, Composition, registerRoot} from 'remotion';
-import {Kitchen, KitchenTable, Grandma, FiveApps, HotPhone, CheeseTrap, Neighbors, OneButton, Doorbell} from './index';
+import {Kitchen, KitchenTable, Grandma, FiveApps, HotPhone, CheeseTrap, Neighbors, OneButton, Doorbell, MoneyCard, Zina, PieSticker} from './index';
+import {loadFont} from '@remotion/google-fonts/Montserrat';
+loadFont('normal', {weights: ['900'], subsets: ['cyrillic', 'latin']});
 import type {Emotion} from './index';
 
 /** Recommended grandma placement in a 1080×1920 frame. */
 export const GRANDMA_PLACEMENT = {left: 22, top: 230, scale: 1.15};
 
-const Scene: React.FC<{phoneUp?: boolean; emotion?: Emotion; mouth?: number}> = ({phoneUp = false, emotion = 'sly', mouth = 0.4}) => (
+const Scene: React.FC<{phoneUp?: boolean; emotion?: Emotion; mouth?: number; wink?: number}> = ({phoneUp = false, emotion = 'sly', mouth = 0.4, wink = 0}) => (
 	<AbsoluteFill style={{background: '#000', overflow: 'hidden'}}>
 		<div style={{position: 'absolute', left: 0, top: 0}}>
 			<Kitchen parallax={0} />
@@ -22,7 +24,7 @@ const Scene: React.FC<{phoneUp?: boolean; emotion?: Emotion; mouth?: number}> = 
 				transformOrigin: '0 0',
 			}}
 		>
-			<Grandma emotion={emotion} mouth={mouth} phoneUp={phoneUp} breathe={0.5} screenGlow={0.8} />
+			<Grandma emotion={emotion} mouth={mouth} phoneUp={phoneUp} breathe={0.5} screenGlow={0.8} wink={wink} />
 		</div>
 		<div style={{position: 'absolute', left: 0, top: 0}}>
 			<KitchenTable parallax={0} />
@@ -61,8 +63,29 @@ const Inserts: React.FC = () => {
 	);
 };
 
+const Inserts2: React.FC = () => (
+	<AbsoluteFill style={{background: '#E7A47E', flexDirection: 'row', flexWrap: 'wrap'}}>
+		<div style={{width: 600, height: 600}}><MoneyCard progress={1} t={0.4} size={600} /></div>
+		<div style={{width: 600, height: 600}}><Zina progress={1} t={0.2} size={600} /></div>
+		<div style={{width: 600, height: 600}}><Neighbors progress={1} t={0.9} size={600} /></div>
+		<div style={{width: 900, height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center'}}><PieSticker progress={1} t={0} size={760} /></div>
+		<div style={{width: 900, height: 600}}><Doorbell progress={1} t={0.3} size={600} open={0.5} /></div>
+	</AbsoluteFill>
+);
+
+const DoorOpen: React.FC = () => (
+	<AbsoluteFill style={{background: '#E7A47E', flexDirection: 'row'}}>
+		{[0, 0.5, 1].map((o) => (
+			<div key={o} style={{width: 600, height: 600}}><Doorbell progress={1} t={0.3} size={600} open={o} /></div>
+		))}
+	</AbsoluteFill>
+);
+
 const Root: React.FC = () => (
 	<>
+		<Composition id="GrandmaWink" component={() => <Scene emotion="sly" mouth={0} wink={1} />} width={1080} height={1920} fps={30} durationInFrames={1} />
+		<Composition id="Inserts2" component={Inserts2} width={1800} height={1200} fps={30} durationInFrames={1} />
+		<Composition id="DoorOpen" component={DoorOpen} width={1800} height={600} fps={30} durationInFrames={1} />
 		<Composition id="Scene" component={Scene} width={1080} height={1920} fps={30} durationInFrames={1} />
 		<Composition id="ScenePhoneUp" component={() => <Scene phoneUp emotion="proud" mouth={0} />} width={1080} height={1920} fps={30} durationInFrames={1} />
 		<Composition id="KitchenOnly" component={() => <AbsoluteFill><Kitchen /><div style={{position: 'absolute', inset: 0}}><KitchenTable /></div></AbsoluteFill>} width={1080} height={1920} fps={30} durationInFrames={1} />
